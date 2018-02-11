@@ -75,11 +75,11 @@ parameter.
 The function _get_hog_features()_ shows how the HOG features are extracted. This
 function is defined in the `lesson_functions.py` between the lines 18 and 36.
 
-![alt text][image1]
+![Features][image1]
 
 The image below shows all 3 channels of HOG features identified from one of the
 test images.
-![alt text][image2]
+![HOG features][image2]
 
 
 #### 1.2.2. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
@@ -287,7 +287,7 @@ vehicle.
 3. The implementation is very dependant on the classifier that was trained.
 
 
-###3. Conclusion
+### 3. Conclusion
 A concept for confidently detecting cars in the provided video is developed and
 implemented. The implemented method can be considered to be robust and takes
 fairly less computation time.
