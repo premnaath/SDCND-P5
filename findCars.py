@@ -30,17 +30,35 @@ def findCars(image):
     hist_bins = 16
     ystart = 375
     ystop = 656
-    scale = 2
+    scale1 = 2
+    cellperstep1 = 1
+    scale2 = 1.5
+    cellperstep2 = 2
+    ystart3 = 375
+    ystop3 = 500
+    scale3 = 0.75
+    cellperstep3 = 2
 
     # Call the initial function to find region of interest.
     # This function uses a larger sliding window and lesser overlap
     # to narrow down the area for vehicle detection.
-    out_img_full, out_img1, hot_windows_shifted = find_cars(image, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
-                                                            cell_per_block, spatial_size, hist_bins)
+    out_img_full, out_img1, hot_windows_shifted = find_cars(image, ystart, ystop, scale1, svc, X_scaler, orient,
+                                                            pix_per_cell, cell_per_block, spatial_size, hist_bins,
+                                                            cellperstep1)
+
+    out_img_full2, out_img2, hot_windows_shifted2 = find_cars(image, ystart, ystop, scale2, svc, X_scaler, orient,
+                                                              pix_per_cell, cell_per_block, spatial_size, hist_bins,
+                                                              cellperstep2)
+
+    out_img_full3, out_img3, hot_windows_shifted3 = find_cars(image, ystart3, ystop3, scale3, svc, X_scaler, orient,
+                                                              pix_per_cell, cell_per_block, spatial_size, hist_bins,
+                                                              cellperstep3)
 
     # A procedure to increase confidence in detection.
     # Can help in removing false positives.
-    hot_windows_shifted.extend(hot_windows_shifted)
+    hot_windows_shifted.extend(hot_windows_shifted2)
+    hot_windows_shifted.extend(hot_windows_shifted3)
+    # hot_windows_shifted.extend(hot_windows_shifted)
 
     # Run the sliding window with smaller size only if the
     # larger window detects car features.
@@ -135,10 +153,10 @@ def findCars(image):
 #######################################################################################################################
 
 # Option specifier to run on images or video.
-runimage = True
+runimage = False
 
 if runimage:
-    image = mpimg.imread('./CarND-Vehicle-Detection/test_images/test1.jpg')
+    image = mpimg.imread('./test_images/test3.jpg')
 
     drawn_image = findCars(image)
 
@@ -148,9 +166,9 @@ if runimage:
 
 else:
     white_output = 'project_video_output.mp4'
-    clip1 = VideoFileClip("./CarND-Vehicle-Detection/project_video.mp4")
+    clip1 = VideoFileClip("./project_video.mp4")
     # clip1 = VideoFileClip("./CarND-Vehicle-Detection/project_video.mp4").subclip(10, 12)
-    # clip1 = VideoFileClip("./CarND-Vehicle-Detection/project_video.mp4").subclip(23.5, 27)
+    # clip1 = VideoFileClip("./project_video.mp4").subclip(27, 29)
 
     white_clip = clip1.fl_image(findCars)
     white_clip.write_videofile(white_output, audio=False)

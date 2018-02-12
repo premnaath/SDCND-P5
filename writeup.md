@@ -45,7 +45,7 @@ the HOG features. The parameters chosen and their chosen values are as follows,
 **Color space**
 HOG features can be extracted for any color space. Different colorspaces like
 RGB, HSV, HSL, LUV and YCrCb were evaluated (based on the training dataset only)
-and it was chosen to go ahead with **HSV** color space. This color space seemed
+and it was chosen to go ahead with **YCrCb** color space. This color space seemed
 to be less computationally intensive and the classification on the test set
 for this color space was about 98%.
 
@@ -75,11 +75,11 @@ parameter.
 The function _get_hog_features()_ shows how the HOG features are extracted. This
 function is defined in the `lesson_functions.py` between the lines 18 and 36.
 
-![Features][image1]
+![alt text][image1]
 
 The image below shows all 3 channels of HOG features identified from one of the
 test images.
-![HOG features][image2]
+![alt text][image2]
 
 
 #### 1.2.2. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
@@ -98,11 +98,11 @@ enough for the classifier to predict the test set with around 92% accuracy.
 Hence it was decided to use these features for training.
 
 **Spatial features**
-Spatial binning of features were made to the color transformed HSV image. The
+Spatial binning of features were made to the color transformed YCrCb image. The
 size of the bins were **16x16** pixels.
 
 **Color historgrams**
-Each color channel of the transformed HSV image were binned and used as
+Each color channel of the transformed YCrCb image were binned and used as
 features. There are **16 bins** used for each color channel. These bins are then
 concatenated and becomes one feature vector.
 
@@ -170,14 +170,27 @@ image at different scales of sliding window.
 Firstly the region of interest is searched with a scale of 2 (which makes the
 window size to be 128x128 pixels). Please note that the HOG features are first
 extracted for the entire region of interest first and then the sliding window
-approach starts. The window slides with 75% overlap. For each window position,
+approach starts. The window slides with 87.5% overlap. For each window position,
 the already extracted HOG features are sampled accordingly. The spatial features
 and color histograms of the region within the sliding window are also extracted.
 This together now makes out feature vector. Now using the already trained
 classifier, a prection is made to check the existance of car inside the window.
 If the prediction turns to be true, then the window position is just appended
-to a list of valid windows. Now the window slides with 75% overlap to the next
+to a list of valid windows. Now the window slides with 87.5% overlap to the next
 position and the same procedure repeats.
+
+In addition to the above mentioned sliding window, two more sliding window
+techniques are added in order to more confidently detect cars in a frame. The
+first extended sliding window technique is added with a window dimension of
+98x98 pixels and an overlap of around 66%.
+
+The second extended technique's window dimensions are 48x48 pixels with an
+overlap of 83%. The main reason for such a small sliding window dimension is
+to detect cars which are far from the go vehicle (as their aparent size would
+be small).
+
+The sliding windows defined by the above mentioned three dimensions are combined
+together as one list.
 
 **Procedure - Scales 2**
 The above procedure returns a set of probable boxes where the car exists. But
@@ -225,7 +238,7 @@ In order to handle false positives, the heatmap is thresholded to a value, high
 enough to disregard the false detections, but low enough to consider the actual
 car detections.
 
-* Threshold value - 5 min heat detections.
+* Threshold value - 4 min heat detections.
 
 **Optimizing usage of classifier**
 The classifier is only as accurate of the features used and the training images
@@ -260,8 +273,8 @@ region where the vehicles exist.
 
 **Code identification**
 The handling of false positives is defined in file `findCars.py` between lines
-35-108 which explains the usage of two different sliding window with different
-overlaps. The actual identification of false positives is done on line 108 where
+35-126 which explains the usage of two different sliding window with different
+overlaps. The actual identification of false positives is done on line 126 where
 the thresholding is applied.
 
 ![False positives][image5]

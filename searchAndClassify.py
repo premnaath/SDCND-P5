@@ -97,14 +97,14 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
 # NOTE: The location has to be changed for training the classifier.
 cars = []
 notcars = []
-for filename in glob.iglob('non-vehicles/**/*.png', recursive=True):
+for filename in glob.iglob('../non-vehicles/**/*.png', recursive=True):
     notcars.append(filename)
 
-for filename in glob.iglob('vehicles/**/*.png', recursive=True):
+for filename in glob.iglob('../vehicles/**/*.png', recursive=True):
     cars.append(filename)
 
 # Parameter declaration
-color_space = 'HSV'  # Can be RGB, HSV, LUV, HLS, YUV, YCrCb --- LUV seems best
+color_space = 'YCrCb'  # Can be RGB, HSV, LUV, HLS, YUV, YCrCb --- LUV seems best
 orient = 12  # HOG orientations
 pix_per_cell = 8  # HOG pixels per cell
 cell_per_block = 2  # HOG cells per block

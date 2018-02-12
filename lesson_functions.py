@@ -212,7 +212,7 @@ def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
     return imcopy
 
 # Define a single function that can extract features using hog sub-sampling and make predictions
-def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins):
+def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins, cells_per_step):
     visualization = False
 
     xstart = img.shape[1]//2
@@ -222,7 +222,8 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
     img = img.astype(np.float32) / 255
 
     img_tosearch = img[ystart:ystop, xstart:img.shape[1], :]
-    ctrans_tosearch = convert_color(img_tosearch, conv='RGB2HSV')
+    # ctrans_tosearch = convert_color(img_tosearch, conv='RGB2HSV')
+    ctrans_tosearch = convert_color(img_tosearch, conv='RGB2YCrCb')
     if scale != 1:
         imshape = ctrans_tosearch.shape
         ctrans_tosearch = cv2.resize(ctrans_tosearch, (np.int(imshape[1] / scale), np.int(imshape[0] / scale)))
@@ -239,7 +240,7 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
     # 64 was the orginal sampling rate, with 8 cells and 8 pix per cell
     window = 64
     nblocks_per_window = (window // pix_per_cell) - cell_per_block + 1
-    cells_per_step = 2  # Instead of overlap, define how many cells to step
+    # cells_per_step = 2  # Instead of overlap, define how many cells to step
     nxsteps = (nxblocks - nblocks_per_window) // cells_per_step + 1
     nysteps = (nyblocks - nblocks_per_window) // cells_per_step + 1
 
@@ -321,7 +322,8 @@ def find_sub_cars(img, scale, svc, X_scaler, orient, pix_per_cell, cell_per_bloc
 
     img = img.astype(np.float32) / 255
 
-    ctrans_tosearch = convert_color(img, conv='RGB2HSV')
+    # ctrans_tosearch = convert_color(img, conv='RGB2HSV')
+    ctrans_tosearch = convert_color(img, conv='RGB2YCrCb')
 
     ch1 = ctrans_tosearch[:, :, 0]
     ch2 = ctrans_tosearch[:, :, 1]
